@@ -6,6 +6,9 @@
 package findduplicate;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JFileChooser;
 
 /**
@@ -53,6 +56,8 @@ public class MainWindow extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTextFileName.setEnabled(false);
 
         jButton1.setText("Open...");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -195,9 +200,29 @@ public class MainWindow extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         if (jTextFileName.getText().equals("")) {
-            
+            jTextMain.append("Please choose a directory. " + newline);
         } else {
             // Run here
+            File dir = new File(jTextFileName.getText());
+            if (!dir.isDirectory()) {
+                jTextMain.append("Supplied directory does not exist." + newline);
+                return;
+            }
+            Map<String, List<String>> lists = new HashMap<String, List<String>>();
+            try {
+                FindDuplicates.find(lists, dir, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            for (List<String> list : lists.values()) {
+                if (list.size() > 1) {
+                    jTextMain.append("--" + newline);
+                    for (String file : list) {
+                        jTextMain.append(file + newline);
+                    }
+                }
+            }
+            jTextMain.append("Done." + newline);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
